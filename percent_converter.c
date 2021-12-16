@@ -4,7 +4,7 @@
 
 /*
     Program: Percent converter
-    Version: 0.3
+    Version: 0.4
 */
 
 // ascii number increase
@@ -28,9 +28,17 @@ int can_it_be_increased(uint64_t a, int b) {
 const int err_num_too_small = -1;
 // error code: when added max uint64 value (> ULLONG_MAX)
 const int err_num_too_large = -2;
+// error code: when pointer is null
+const int err_null_pointer = -3;
+// error code: when program has critical error and must be ended
+const int err_crit = -4;
+
 
 // return user number input
-int get_user_num_input(uint64_t *result) {
+int get_user_num_input(/* OUT */uint64_t *result) {
+    if (result == NULL) {
+        return err_null_pointer;
+    }
     int input = getchar();
     int char_counter = 1;
 
@@ -73,6 +81,8 @@ int main () {
             printf("\nPlease, enter number again on press enter for exit:\n");
             error = get_user_num_input(&first_num);
             break;
+        case err_null_pointer:
+            return err_null_pointer;
         default:
             printf("UNDEFINED_ERROR_CODE: %d", error);
             break;

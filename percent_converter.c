@@ -4,7 +4,7 @@
 
 /*
     Program: Percent converter
-    Version: 0.4
+    Version: 0.5
 */
 
 // ascii number increase
@@ -34,8 +34,8 @@ const int err_null_pointer = -3;
 const int err_crit = -4;
 
 
-// return user number input
-int get_user_num_input(/* OUT */uint64_t *result) {
+// return user number input from stdin
+int std_input(/* OUT */ uint64_t *result) {
     if (result == NULL) {
         return err_null_pointer;
     }
@@ -63,23 +63,25 @@ int get_user_num_input(/* OUT */uint64_t *result) {
     return 0;
 }
 
-int main () {
-    uint64_t first_num = 0;
-    printf("\nUINT_64_T_MAX_SIZE: %llu\n", ULLONG_MAX);
-
+// return number
+int get_number(/* OUT */ uint64_t *number) {
+    if (number == NULL) {
+        return err_null_pointer;
+    }
     int error = 0;
-    error = get_user_num_input(&first_num);
+    uint64_t input = 0;
+    error = std_input(&input);
     while (error < 0) {
         switch (error) {
         case err_num_too_small:
             printf("\nEntered number can't be a zero or less.\n");
             printf("\nPlease, enter number again on press enter for exit:\n");
-            error = get_user_num_input(&first_num);
+            error = std_input(&input);
             break;
         case err_num_too_large:
             printf("\nMaximum allowed number is: %llu\n", ULLONG_MAX);
             printf("\nPlease, enter number again on press enter for exit:\n");
-            error = get_user_num_input(&first_num);
+            error = std_input(&input);
             break;
         case err_null_pointer:
             return err_null_pointer;
@@ -88,8 +90,33 @@ int main () {
             break;
         }
     }
+    *number = input;
 
-    printf("\nRESULT: %llu\n", first_num);
+    return error;
+}
+
+int main () {
+    uint64_t number = 0;
+    uint64_t percent = 0;
+    int error = 0;
+    printf("INT_MAX %llu\n", ULLONG_MAX);
+
+    printf("\nEnter a number:\n");
+    error = get_number(&number);
+    if (error != 0) {
+        printf("Program has critical error code: %d", error);
+        return 1;
+    }
+
+    printf("\nEnter a percent:\n");
+    error = get_number(&percent);
+    if (error != 0) {
+        printf("Program has critical error code: %d", error);
+        return 1;
+    }
+
+    printf("\nNUMBER: %llu\n", number);
+    printf("\nPERCENT: %llu\n", percent);
 
     return 0;
 }
